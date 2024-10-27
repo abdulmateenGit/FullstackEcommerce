@@ -1,15 +1,17 @@
-import express from "express";
+import express, { json, urlencoded } from "express";
 import productsRouter from "./routes/products/index";
 
-const app = express();
 const port = 3000;
+const app = express();
+
+app.use(urlencoded({ extended: false }));
+app.use(json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-
-app.use('/products',productsRouter);
+app.use("/products", productsRouter);
 
 app.listen(port, () => {
   console.log(`Exemple app listing on port ${port} `);
