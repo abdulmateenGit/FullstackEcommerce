@@ -20,7 +20,6 @@ export const ordersTable = pgTable("orders", {
     .notNull(),
 });
 
-
 export const orderItemsTable = pgTable("order_items", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
 
@@ -45,9 +44,13 @@ export const insertOrderSchema = createInsertSchema(ordersTable).omit({
 export const insertOrderItemSchema = createInsertSchema(orderItemsTable).omit({
   id: true,
   orderId: true,
-})
+});
 
 export const insertOrderWitheItemsSchema = z.object({
-  order:insertOrderSchema,
-  items:z.array(insertOrderItemSchema),
-})
+  order: insertOrderSchema,
+  items: z.array(insertOrderItemSchema),
+});
+
+export const updateOrderSchema = createInsertSchema(ordersTable).pick({
+  status: true,
+});
