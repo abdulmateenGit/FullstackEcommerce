@@ -1,28 +1,29 @@
-import { Request, Response } from "express";
-import { db } from "../../db/index.js";
-import { productsTable} from "../../db/productSchema.js";
-import { eq } from "drizzle-orm";
-import _ from "lodash";
+import { Request, Response } from 'express';
+import { db } from '../../db/index.js';
+import { productsTable } from '../../db/productsSchema.js';
+import { eq } from 'drizzle-orm';
+import _ from 'lodash';
 
 export async function listProducts(req: Request, res: Response) {
   try {
     const products = await db.select().from(productsTable);
     res.json(products);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 }
 
 export async function getProductById(req: Request, res: Response) {
   try {
-    const id = Number(req.params.id);
+    const { id } = req.params;
     const [product] = await db
       .select()
       .from(productsTable)
-      .where(eq(productsTable.id, id));
+      .where(eq(productsTable.id, Number(id)));
 
     if (!product) {
-      res.status(404).send({ message: "Product not foud" });
+      res.status(404).send({ message: 'Product not found' });
     } else {
       res.json(product);
     }
@@ -33,6 +34,8 @@ export async function getProductById(req: Request, res: Response) {
 
 export async function createProduct(req: Request, res: Response) {
   try {
+    console.log(req.userId);
+
     const [product] = await db
       .insert(productsTable)
       .values(req.cleanBody)
@@ -57,7 +60,7 @@ export async function updateProduct(req: Request, res: Response) {
     if (product) {
       res.json(product);
     } else {
-      res.status(404).send({ message: "Product was not found" });
+      res.status(404).send({ message: 'Product was not found' });
     }
   } catch (e) {
     res.status(500).send(e);
@@ -71,11 +74,10 @@ export async function deleteProduct(req: Request, res: Response) {
       .delete(productsTable)
       .where(eq(productsTable.id, id))
       .returning();
-
     if (deletedProduct) {
       res.status(204).send();
     } else {
-      res.status(404).send({ message: "Product was not found" });
+      res.status(404).send({ message: 'Product was not found' });
     }
   } catch (e) {
     res.status(500).send(e);

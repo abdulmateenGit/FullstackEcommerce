@@ -5,8 +5,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { usersTable } from "./usersSchema.js";
-import { productsTable } from "./productSchema.js";
+import { usersTable } from "./usersSchema";
+import { productsTable } from "./productsSchema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -46,7 +46,7 @@ export const insertOrderItemSchema = createInsertSchema(orderItemsTable).omit({
   orderId: true,
 });
 
-export const insertOrderWitheItemsSchema = z.object({
+export const insertOrderWithItemsSchema = z.object({
   order: insertOrderSchema,
   items: z.array(insertOrderItemSchema),
 });
