@@ -1,15 +1,19 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import products from '../assets/product.json';
-import ProductListItem from "../components/ProductListItem";
+import { View, Text, FlatList } from 'react-native'
+import products from "@/assets/products.json"
+import ProductListItem from '@/components/ProductListItem'
 
 
-export default function Page() {
+
+export default function HomeScreen() {
   return (
     <FlatList
       data={products}
-      renderItem={({ item }) =>
+      numColumns={2}
+      contentContainerClassName='gap-2'
+      columnWrapperClassName='gap-2'
+      renderItem={({ item }) => (
         <ProductListItem product={item} />
-      }
+      )}
     />
-  );
+  )
 }

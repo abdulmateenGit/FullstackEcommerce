@@ -2,13 +2,14 @@
   "expo": {
     "name": "ecommerce-mobile",
     "slug": "ecommerce-mobile",
-    "scheme": "just-ecom",
+    "scheme":"ecommerce-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,7 +23,8 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+       "bundler": "metro"
     },
     "plugins": [
       "expo-router"
