@@ -1,6 +1,7 @@
 import React from 'react'
 import { Stack, useLocalSearchParams } from 'expo-router'
-import products from '@/assets/products.json'
+// import products from '@/assets/products.json' //this is local data now we are facthing from server
+
 
 import { Card } from "@/components/ui/card";
 import { Image } from "@/components/ui/image";
@@ -10,13 +11,26 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
+import { getProductById } from '@/api/products';
+import { useQuery } from '@tanstack/react-query';
+import { ActivityIndicator } from 'react-native';
+
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
 
-  const product = products.find((p) => p.id === Number(id))
+  const { data: product, isLoading, error } = useQuery({
+    queryKey: ['products', id],
+    queryFn: () => getProductById(Number(id))
+  })
 
-  if (!product) {
-    return <Text>Product not found</Text>
+  // const product = products.find((p) => p.id === Number(id))
+
+  if (isLoading) {
+    return <ActivityIndicator size='large' />
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>
   }
 
   return (
