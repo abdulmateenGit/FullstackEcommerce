@@ -14,15 +14,25 @@ import { Text } from "@/components/ui/text";
 import { getProductById } from '@/api/products';
 import { useQuery } from '@tanstack/react-query';
 import { ActivityIndicator } from 'react-native';
+import { useCart } from '@/store/cartStore';
 
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
+
+  const addProduct = useCart((state) => state.addProduct)
+
+  //For debugging purpose is shwoing the cart items or not in console
+  // const cartItems = useCart(state => state.items)
+  // console.log(JSON.stringify(cartItems, null, 2))
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ['products', id],
     queryFn: () => getProductById(Number(id))
   })
 
+  const addToCart = () => {
+    addProduct(product)
+  }
   // const product = products.find((p) => p.id === Number(id))
 
   if (isLoading) {
@@ -57,7 +67,7 @@ export default function ProductDetailsScreen() {
           </Text>
         </VStack>
         <Box className="flex-col sm:flex-row">
-          <Button className="px-4 py-2 mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1">
+          <Button onPress={addToCart} className="px-4 py-2 mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1">
             <ButtonText size="sm">Add to cart</ButtonText>
           </Button>
           <Button
