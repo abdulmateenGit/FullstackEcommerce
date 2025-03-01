@@ -8,10 +8,13 @@ import { Pressable, Animated, View } from "react-native"; // Import Animated and
 import { useEffect, useRef } from "react"; // Import useEffect and useRef
 import { useCart } from "@/store/cartStore"; // Import your cart store
 import { Text } from "@/components/ui/text";
+import { useAuth } from "@/store/authStore";
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+  const isLoggedIn = useAuth((s) => !!s.token);
+
   const hasItems = useCart((state) => state.hasItems); // Get the hasItems state
 
   const cartItemsNum = useCart((state) => state.items.length); // Get the number of items in the cart
@@ -53,17 +56,18 @@ export default function RootLayout() {
               </Pressable>
             </Link>
           ),
-          // Login Screen
-          headerLeft: () => (
-            <Link href={"/login"} asChild>
-              <Pressable className="flex-row gap-2 ml-1 p-3">
-                {/* User Icon */}
-                <Icon as={User} size="xl" />
-              </Pressable>
-            </Link>
-          ),
         }}>
-          <Stack.Screen name="index" options={{ title: "Shop", headerTitleAlign: "center" }} />
+          <Stack.Screen name="index" options={{
+            title: "Shop", headerTitleAlign: "center", // Login Screen
+            headerLeft: () => !isLoggedIn && (
+              <Link href={"/login"} asChild>
+                <Pressable className="flex-row gap-2 ml-1 p-3">
+                  {/* User Icon */}
+                  <Icon as={User} size="xl" />
+                </Pressable>
+              </Link>
+            ),
+          }} />
           <Stack.Screen name="product/[id]" options={{ title: "Product", headerTitleAlign: "center" }} />
         </Stack>
       </GluestackUIProvider>
