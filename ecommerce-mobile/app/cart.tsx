@@ -1,9 +1,11 @@
+import { createOrder } from "@/api/orders";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useCart } from "@/store/cartStore";
+import { useMutation } from "@tanstack/react-query";
 import { Redirect, Stack } from "expo-router";
 import { Minus, Plus } from "lucide-react-native";
 import { FlatList } from "react-native";
@@ -13,6 +15,24 @@ export default function Cart() {
   const increaseQuantity = useCart((state) => state.increaseQuantity);
   const decreaseQuantity = useCart((state) => state.decreaseQuantity);
   const restCart = useCart((state) => state.restCart);
+
+  const createOrderMutation = useMutation({
+    mutationFn: () =>
+      createOrder(
+        items.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          price: item.product.price,
+        }))),
+    onSuccess: (data) => {
+      console.log(data);
+      restCart();
+    },
+    onError: (error) => { console.log(error); },
+  })
+  const onCheckout = async () => {
+    createOrderMutation.mutate();
+  }
 
   if (items.length === 0) {
     return <Redirect href={"/"} />;
@@ -63,7 +83,7 @@ export default function Cart() {
         ListFooterComponent={() => (
           <VStack className="mt-4 p-3 bg-gray-100">
             <Text className="text-lg font-bold">Subtotal: Rs. {subtotal}</Text>
-            <Button onPress={restCart} className="mt-2">
+            <Button onPress={onCheckout} className="mt-2">
               <ButtonText>Checkout</ButtonText>
             </Button>
           </VStack>
